@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "1076438261023",
+    "project_id": "locationcode-375e7"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076438261023:android:f1b4fa493d597601",
+        "android_client_info": {
+          "package_name": "com.location_code"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD72cMO4ymOKf7PnXlcm5DFkPrwIol5KHc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
