@@ -2,6 +2,8 @@ import React from 'react-native';
 import LocationPage from './components/LocationPage';
 import Login from './components/Login';
 import Profile from './components/Profile';
+import MarkerTypes from './components/MarkerTypes';
+import Register from './components/Register';
 
 var {
   Navigator,
@@ -41,6 +43,12 @@ class location_code extends React.Component {
     }
     if (route.name === "Profile") {
       return <Profile navigator={navigator} {...route.passProps} />
+    }
+    if (route.name === "MapView") {
+      return <MarkerTypes navigator={navigator} {...route.passProps} />
+    }
+    if (route.name === "Register") {
+      return <Register navigator={navigator} {...route.passProps} />
     }
   }
 }

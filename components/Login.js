@@ -4,6 +4,7 @@ const {
   View,
   TouchableOpacity,
   AsyncStorage,
+  Modal,
   Image,
   TextInput,
   ToastAndroid
@@ -22,7 +23,10 @@ class Login extends React.Component{
     this.state = {
       username: '',
       password: '',
-      userDataResponse: ''
+      userDataResponse: '',
+      animated: true,
+      modalVisible: false,
+      transparent: false
     };
   }
 
@@ -66,22 +70,47 @@ class Login extends React.Component{
     xhr.setRequestHeader('token-type', this.state.userDataResponse['token-type']);
     xhr.setRequestHeader('uid', this.state.userDataResponse['uid']);
     xhr.send(null);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState===2 || xhr.readyState===4) {
+        this.setState ({ 
+          modalVisible: true,
+          transparent: true,
+          animated: true
+        });
+        console.log('On ready :',this.state.modalVisible);
+      }
+    }.bind(this);
     xhr.onload = function () {
       if (xhr.status === 200){
+        this.setState ({ 
+          modalVisible: false,
+          transparent: false,
+          animated: false
+        });
         return navigator.push({
           name: 'LocationPage',
           passProps: {
             userToken: userDataResponse,
-            userProfiles: xhr.responseText
+            userProfiles: JSON.parse(xhr.responseText).data
           }
         });
       }else{
-        return ToastAndroid.show('Send Faild', ToastAndroid.SHORT);
+        this.setState ({ 
+          modalVisible: false,
+          transparent: false,
+          animated: false
+        });
       }
-    }
+    }.bind(this);
   }
 
   render(){
+    var modalBackgroundStyle = {
+      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
+    };
+    var innerContainerTransparentStyle = this.state.transparent
+      ? {padding: 20}
+      : null;
     return(
       <View style={styles.container}>
         <Icon.ToolbarAndroid
@@ -89,6 +118,18 @@ class Login extends React.Component{
            titleColor="white"
            style={styles.toolbar}
          />
+        <Modal
+          animated={this.state.animated}
+          transparent={this.state.transparent}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {this._setModalVisible(false)}}
+          >
+            <View style={[styles.container, modalBackgroundStyle]}>
+              <View style={[styles.innerContainer, innerContainerTransparentStyle]}>
+                <Image source={require('../assets/loading.gif')} />
+              </View>
+            </View>
+          </Modal>
         <View style={styles.messageBox}>
           <Image
             style={styles.badge}
@@ -118,12 +159,24 @@ class Login extends React.Component{
               style={{fontSize: 15, color: '#fff'}} >
               Log In
             </Button>
+            <Button 
+              onPress={this._handleRegister.bind(this)}
+              containerStyle={styles.container_button}
+              style={{fontSize: 15, color: '#fff'}} >
+              Register
+            </Button>
           </View>
         </View>
       </View>
     )
   }
-   _handleLogin(){
+  _handleRegister(){
+    return this.props.navigator.push({
+      name: 'Register'
+    });
+  }
+
+  _handleLogin(){
     let navigator = this.props.navigator;
     let xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://locationcode.rotati.com/api/v1/auth/sign_in');
@@ -133,6 +186,16 @@ class Login extends React.Component{
     formdata.append("password", String(this.state.password));
     xhr.send(formdata);
     console.log(xhr);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState===2 || xhr.readyState===4) {
+        this.setState ({ 
+          modalVisible: true,
+          transparent: true,
+          animated: true
+        });
+        console.log('On ready :',this.state.modalVisible);
+      }
+    }.bind(this);
     xhr.onload = function () {
       if (xhr.status === 200){
         AsyncStorage.setItem(ACCESS_TOKEN, JSON.stringify(xhr.responseHeaders), () => {
@@ -140,17 +203,22 @@ class Login extends React.Component{
             console.log(result);
           });
         });
+        this.setState ({ 
+          modalVisible: false,
+          transparent: false,
+          animated: false
+        });
         return navigator.push({
           name: 'LocationPage',
           passProps: {
             userToken: xhr.responseHeaders,
-            userProfiles: xhr.responseText
+            userProfiles: JSON.parse(xhr.responseText).data
           }
         });
       }else{
         return ToastAndroid.show('Logon Failure Unknown username or bad password', ToastAndroid.SHORT);
       }
-    };
+    }.bind(this);
   }
 }
 

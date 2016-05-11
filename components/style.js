@@ -88,6 +88,15 @@ module.exports = StyleSheet.create({
     borderRadius:4, 
     backgroundColor: '#5f9ea0'
   },
+  container_button_save: {
+    flex:1,
+    margin: 5,
+    padding:5, 
+    paddingTop: 10,
+    height:45, 
+    borderRadius:4, 
+    backgroundColor: '#6495ed'
+  },
   innerContainer: {
     borderRadius: 10,
     alignItems: 'center',
@@ -107,14 +116,16 @@ module.exports = StyleSheet.create({
     backgroundColor: '#fff',
   },
   image: {
-    flex: 1,
-    height: 300
+    height: 80,
+    width: 80,
+    borderWidth: 1
   },
   imageContainer: {
     backgroundColor: 'transparent',
     borderColor: '#9B9B9B',
-    borderWidth: 1 / PixelRatio.get(),
     margin: 5,
+    flex: 1,
+    flexDirection:'column',
   },
   containerImage: {
     flexDirection:'column',

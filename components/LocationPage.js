@@ -4,12 +4,14 @@ var Button = require('react-native-button');
 var styles = require('./style');
 var Icon = require('react-native-vector-icons/Ionicons');
 var MapView = require('react-native-maps');
+var Carousel = require('react-native-carousel');
 
 const {
   StyleSheet,
   Text,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   Image,
   Dimensions,
   TextInput,
@@ -30,8 +32,8 @@ var { width, height } = Dimensions.get('window');
 
 const ACCESS_TOKEN = '';
 const ASPECT_RATIO = width / height;
-const LATITUDE = 11.5735966;
-const LONGITUDE = 104.9211546;
+const LATITUDE = 11.566171;
+const LONGITUDE = 104.8763978;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const SPACE = 0.01;
@@ -52,7 +54,10 @@ export default class LocationPage extends React.Component {
       categories: [],
       animated: true,
       modalVisible: false,
-      transparent: false
+      transparent: false,
+      mapAnimated: true,
+      mapModalVisible: false,
+      mapTransparent: false
     };
     ToastAndroid.show('You have Login success!', ToastAndroid.LONG);
   }
@@ -132,7 +137,7 @@ export default class LocationPage extends React.Component {
       name: 'Profile',
       passProps: {
         userToken: this.state.userToken,
-        userProfiles: JSON.parse(this.state.userProfiles)
+        userProfiles: this.state.userProfiles
       }
     });
   }
@@ -146,7 +151,36 @@ export default class LocationPage extends React.Component {
       return console.log(error);
     }
   }
+
+  _onPressRateUs() {
+    this.refs['DRAWER_REF'].closeDrawer();
+    ToastAndroid.show('Comming Soon!', ToastAndroid.LONG);
+  }
+
+  _onPressFeedBack() {
+    this.refs['DRAWER_REF'].closeDrawer();
+    ToastAndroid.show('Comming Soon!', ToastAndroid.LONG);
+  }
+
+  _onSelectMap(){
+    this.setState ({
+      mapAnimated: true,
+      mapModalVisible: true,
+      mapTransparent: true
+    });
+  }
+
+  _onSubmitLocation(){
+    this.setState ({
+      mapAnimated: true,
+      mapModalVisible: false,
+      mapTransparent: false
+    });
+  }
+
   render() {
+    console.log('Lati :',this.state.latitude);
+    console.log('Long :',this.state.longitude);
     var modalBackgroundStyle = {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
     };
@@ -157,8 +191,10 @@ export default class LocationPage extends React.Component {
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <View style={{height: 220, backgroundColor: '#d2691e',justifyContent: 'center',alignItems: 'center'}} >
           <Image style={styles.profile_picture} source={require('../assets/profile_pic.jpg')} />
-          <Text style={{fontWeight: 'bold', padding: 2, color: '#fff'}}>Chan Sila</Text>
-          <Text style={{color: '#fff'}}>chansila8@gmail.com</Text>
+          <Text style={{fontWeight: 'bold', padding: 2, color: '#fff'}}>
+            {this.state.userProfiles.first_name} {this.state.userProfiles.last_name}
+          </Text>
+          <Text style={{color: '#fff'}}>{this.state.userProfiles.email}</Text>
         </View>
         <View style={{flexDirection:'row',marginBottom: 5, marginTop: 12}}>
           <Icon name="android-person" style={{ marginLeft: 15, fontSize: 25}}/>
@@ -174,13 +210,13 @@ export default class LocationPage extends React.Component {
         </View>
         <View style={{flexDirection:'row',marginBottom: 5, marginTop: 6}}>
           <Icon name="android-mail" style={{ marginLeft: 15, fontSize: 25}}/>
-          <TouchableHighlight onPress={this._onPressFeedBack} underlayColor='#fff'>
+          <TouchableHighlight onPress={this._onPressFeedBack.bind(this)} underlayColor='#fff'>
             <Text style={{fontFamily: 'Serif',paddingTop: 18, fontSize: 16, flex: 1, marginLeft: 40}}>Feed Back</Text>
           </TouchableHighlight>
         </View>
         <View style={{flexDirection:'row',marginBottom: 5}}>
           <Icon name="star" style={{ marginLeft: 15, fontSize: 25, color: 'gold'}}/>
-          <TouchableHighlight onPress={this._onPressRateUs} underlayColor='#fff'>
+          <TouchableHighlight onPress={this._onPressRateUs.bind(this)} underlayColor='#fff'>
             <Text style={{fontFamily: 'Serif',paddingTop: 18, fontSize: 16, flex: 1, marginLeft: 40}}>Rate Us</Text>
           </TouchableHighlight>
         </View>
@@ -202,7 +238,7 @@ export default class LocationPage extends React.Component {
            style={styles.toolbar}
          />
         <ScrollView
-          ref={(scrollView) => { _scrollView = scrollView; }}
+          ref='_scrollView'
           > 
         <Modal
           animated={this.state.animated}
@@ -216,6 +252,47 @@ export default class LocationPage extends React.Component {
             </View>
           </View>
         </Modal>
+        <Modal
+          animated={this.state.mapAnimated}
+          transparent={this.state.mapTransparent}
+          visible={this.state.mapModalVisible}
+          onRequestClose={() => {this._setModalVisible(false)}}
+          >
+          <MapView
+          ref="map"
+          style={styles.map}
+          cacheEnabled={true}
+          showsUserLocation={true}
+          initialRegion={{
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }}
+          >
+            <MapView.Marker
+              coordinate={this.state.a}
+              onSelect={(e) => console.log('onSelect', e.nativeEvent.coordinate)}
+              onDrag={(e) => console.log('onDrag', e.nativeEvent.coordinate)}
+              onDragStart={(e) => console.log('onDragStart', e.nativeEvent.coordinate)}
+              onDragEnd={(e) => this.setState ({ 
+                  latitude: e.nativeEvent.coordinate.latitude,
+                  longitude: e.nativeEvent.coordinate.longitude,
+                  a: {
+                    latitude: e.nativeEvent.coordinate.latitude,
+                    longitude: e.nativeEvent.coordinate.longitude,
+                  }
+                }) 
+              }
+              onPress={(e) => console.log('onPress', e.nativeEvent.coordinate)}
+              draggable
+            />
+          </MapView>
+          <TouchableOpacity style={{borderRadius: 5,marginLeft: 80,alignItems: 'center',height: 40,marginTop: 10,backgroundColor: 'rgba(255,255,255,0.7)',width: 200,paddingHorizontal: 12,alignItems: 'center',marginHorizontal: 10,}} onPress={this._onSubmitLocation.bind(this)} underlayColor='#fff'>
+            <Text style={{fontWeight: 'bold',fontSize: 16, marginTop: 10}}>Select this Location</Text>
+          </TouchableOpacity>
+        </Modal>
+
         <View style={styles.form_container}>
           <Text style={styles.text_title}>Business Name :</Text>
           <TextInput
@@ -227,7 +304,7 @@ export default class LocationPage extends React.Component {
             onChangeText={(name) => this.setState({name})}
             value={this.state.name} />
 
-          <Text style={styles.text_title}>State :</Text>
+          <Text style={styles.text_title}>Country :</Text>
           <TextInput
             ref='stated'
             style={styles.textinput}
@@ -300,56 +377,55 @@ export default class LocationPage extends React.Component {
             }
           </Picker>
         </View>
-        <View style={{flex: 1, height: 450, margin: 5}}>
-          <MapView
-          ref="map"
-          style={styles.map}
-          cacheEnabled={true}
-          showsUserLocation={true}
-          initialRegion={{
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          }}
+
+        <Button 
+        onPress={this._onSelectMap.bind(this)}
+        containerStyle={styles.container_button}
+        style={{fontSize: 15, color: '#fff'}}
         >
-          <MapView.Marker
-            coordinate={this.state.a}
-            onSelect={(e) => console.log('onSelect', e.nativeEvent.coordinate)}
-            onDrag={(e) => console.log('onDrag', e.nativeEvent.coordinate)}
-            onDragStart={(e) => console.log('onDragStart', e.nativeEvent.coordinate)}
-            onDragEnd={(e) => this.setState ({ 
-                latitude: e.nativeEvent.coordinate.latitude,
-                longitude: e.nativeEvent.coordinate.longitude
-              }) 
-            }
-            onPress={(e) => console.log('onPress', e.nativeEvent.coordinate)}
-            draggable
-          />
-        </MapView>
-      </View>
-            <Button 
-            onPress={this.selectPhotoTapped.bind(this)}
-            containerStyle={styles.container_button}
-            style={{fontSize: 15, color: '#fff'}}
-            >
-            Select Photo
-          </Button>
-        <Swiper loop={false} height={300}>
-          { this.state.imageSource.length <= 0 ? <Text></Text> :
+        Select Business Location
+        </Button>
+        <View style={{flexDirection: 'row',margin: 10}} >
+          <View style={{flexDirection: 'column',flex: 1}} >
+            <Text>Latitude :</Text>
+            <TextInput
+              editable={false}
+              placeholderTextColor='grey'
+              onChangeText={(latitude) => this.setState({latitude})}
+              value={this.state.latitude + ''} />
+          </View>
+          <View style={{flexDirection: 'column', flex: 1}} >
+            <Text>Longtitude :</Text>
+            <TextInput
+              editable={false}
+              placeholderTextColor='grey'
+              onChangeText={(longitude) => this.setState({longitude})}
+              value={this.state.longitude + ''} />
+          </View>
+        </View>
+        <Button 
+        onPress={this.selectPhotoTapped.bind(this)}
+        containerStyle={styles.container_button}
+        style={{fontSize: 15, color: '#fff'}}
+        >
+        Select Photo
+      </Button>
+        <View style={{flexDirection: 'row',height: 80}} >
+          { this.state.imageSource.length <= 0 ? <Text></Text>:
               this.state.imageSource.map(function(imageselected,key){
                 return(
-                  <View key={key++} style={[styles.imageContainer, {marginBottom: 20,marginLeft: 10, marginRight: 10}]}>
+                  <View key={key} style={[styles.imageContainer, {marginBottom: 20,marginLeft: 10, marginRight: 10}]}>
                     <Image style={styles.image} source={imageselected} />
                   </View>
                 )
               })
           }
-        </Swiper>
+        </View>
+        
         <View>
           <Button 
             onPress={this.gotoResultPage.bind(this)}
-            containerStyle={styles.container_button}
+            containerStyle={styles.container_button_save}
             style={{fontSize: 15, color: '#fff'}}
           >
             Save Information
@@ -392,7 +468,7 @@ export default class LocationPage extends React.Component {
       formdata.append("location[location_photos_attributes["+key+"][photo]]", {uri: imageselected.uri, name: _generateUUID()+'.jpg', type: 'multipart/form-data'});
     });
     xhr.onreadystatechange = function () {
-      if (xhr.readyState===4) {
+      if (xhr.readyState===2 || xhr.readyState===4) {
         this.setState ({ 
           modalVisible: true,
           transparent: true,
@@ -403,20 +479,32 @@ export default class LocationPage extends React.Component {
     }.bind(this);
     xhr.send(formdata);
     xhr.onload = function () {
+      this.setState ({ 
+          modalVisible: true,
+          transparent: true,
+          animated: true
+        });
       if (xhr.status === 201){
         this.setState ({ 
           modalVisible: false,
           transparent: false,
-          animated: false
+          animated: false,
+          name: '',description: '',home: '',
+          street: '',commune: '',district: '',city: '',
+          stated: '',latitude: '',longitude: '',imageSource: []
         });
         console.log('On success :', this.state.modalVisible);
+        ToastAndroid.show('Data send successful!', ToastAndroid.LONG);
+        this.refs._scrollView.scrollTo({x: 5, y: 5, animated: true});
       }else {
         this.setState ({ 
           modalVisible: false,
           transparent: false,
-          animated: false
+          animated: false,
         });
         console.log('On Failed :', this.state.modalVisible);
+        ToastAndroid.show('Fails :'+xhr.responseText, ToastAndroid.LONG);
+        this.refs._scrollView.scrollTo({x: 5, y: 5, animated: true});
       }
     }.bind(this);
     console.log(xhr);
