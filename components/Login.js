@@ -140,11 +140,6 @@ class Login extends React.Component{
             console.log(result);
           });
         });
-        // AsyncStorage.setItem(USER_PROFILE, JSON.stringify(xhr.responseText), () => {
-        //   AsyncStorage.getItem(USER_PROFILE, (err, result) => {
-        //     console.log(result);
-        //   });
-        // });
         return navigator.push({
           name: 'LocationPage',
           passProps: {

@@ -1,6 +1,7 @@
 package com.location_code;
 
 import com.facebook.react.ReactActivity;
+import com.AirMaps.AirPackage;
 import com.tiagojdferreira.RNGeolocationPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -38,6 +39,7 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new AirPackage(),
             new RNGeolocationPackage(),
             new VectorIconsPackage(),
             new ImagePickerPackage()

@@ -22,6 +22,35 @@ module.exports = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
   },
+  user_profile: {
+    marginTop: 10, 
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 20,
+    fontFamily: 'notoserif', 
+    fontWeight: 'bold'
+  },
+  rightContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  year: {
+    textAlign: 'center',
+  },
+  thumbnail: {
+    width: 63,
+    height: 81,
+    margin: 5,    
+  },
+  listView: {
+    paddingTop: 5,
+    marginBottom: 5,
+    backgroundColor: '#F5FCFF',
+  },
   wraper: {
     flex: 1,
     marginTop: 60,
@@ -58,6 +87,18 @@ module.exports = StyleSheet.create({
     height:45, 
     borderRadius:4, 
     backgroundColor: '#5f9ea0'
+  },
+  innerContainer: {
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  map: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+
   },
   container: {
     flex: 1,

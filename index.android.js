@@ -45,54 +45,10 @@ class location_code extends React.Component {
   }
 }
 
-// var NavigationBarRouteMapper = {
-//   LeftButton(route, navigator, index, navState) {
-//     if(index > 0 && route.name != "LocationPage") {
-//       return (
-//         <TouchableHighlight
-//           underlayColor="transparent"
-//           onPress={() => { if (index > 0) { navigator.pop() } }}>
-//           <Icon style={ styles.leftNavButtonText } name="android-arrow-back" size={30} color="#008CBA" />
-//         </TouchableHighlight>)
-//     }
-//     else { return null }
-//   },
-
-//   RightButton(route, navigator, index, navState) {
-//     return null
-//   },
-
-//   Title(route, navigator, index, navState) {
-//     return <Text style={ styles.title }>Location Code</Text>
-//   }
-// };
-
 const styles = StyleSheet.create({
   navigator: {
     flex: 1
   },
-  // title: {
-  //   marginTop:10,
-  //   marginLeft: 45,
-  //   fontSize:20,
-  //   fontWeight: 'bold',
-  //   color: 'grey',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // leftNavButtonText: {
-  //   marginLeft:13,
-  //   marginTop: 15
-  // },
-  // rightNavButtonText: {
-  //   fontSize: 18,
-  //   marginRight:13,
-  //   marginTop:2
-  // },
-  // nav: {
-  //   height: 60,
-  //   backgroundColor: '#1c204C',
-  // }
 });
 
 AppRegistry.registerComponent('location_code', () => location_code);
