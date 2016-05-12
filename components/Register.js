@@ -137,6 +137,11 @@ class Register extends React.Component{
   }
 
   _handleRegister(){
+    this.setState ({ 
+      modalVisible: true,
+      transparent: true,
+      animated: true
+    });
     let navigator = this.props.navigator;
     let xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://locationcode.rotati.com/api/v1/auth');
@@ -149,7 +154,6 @@ class Register extends React.Component{
     formdata.append("password", this.state.password);
     formdata.append("password_confirmation", this.state.confirmPassword);
     xhr.send(formdata);
-    console.log(xhr);
     xhr.onreadystatechange = function () {
       if (xhr.readyState===2 || xhr.readyState===4) {
         this.setState ({ 
@@ -157,7 +161,6 @@ class Register extends React.Component{
           transparent: true,
           animated: true
         });
-        console.log('On ready :',this.state.modalVisible);
       }
     }.bind(this);
     xhr.onload = function () {

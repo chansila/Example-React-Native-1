@@ -176,6 +176,13 @@ export default class LocationPage extends React.Component {
     });
   }
 
+  _setModalVisible(visible) {
+    this.setState({mapModalVisible: visible});
+  }
+  _setLoadingVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
   render() {
     var modalBackgroundStyle = {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
@@ -240,7 +247,7 @@ export default class LocationPage extends React.Component {
           animated={this.state.animated}
           transparent={this.state.transparent}
           visible={this.state.modalVisible}
-          onRequestClose={() => {this._setModalVisible(false)}}
+          onRequestClose={() => {this._setLoadingVisible(false)}}
           >
           <View style={[styles.container, modalBackgroundStyle]}>
             <View style={[styles.innerContainer, innerContainerTransparentStyle]}>

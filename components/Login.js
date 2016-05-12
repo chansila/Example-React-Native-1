@@ -177,6 +177,11 @@ class Login extends React.Component{
   }
 
   _handleLogin(){
+    this.setState ({ 
+      modalVisible: false,
+      transparent: false,
+      animated: false
+    });
     let navigator = this.props.navigator;
     let xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://locationcode.rotati.com/api/v1/auth/sign_in');

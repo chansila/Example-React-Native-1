@@ -166,13 +166,11 @@ export default class Profile extends React.Component{
     )
   }
   _handleUpdateProfile(){
-    console.log('userID',this.state.userID);
-    console.log('FName',this.state.firstName);
-    console.log('LName',this.state.lastName);
-    console.log('Add',this.state.address);
-    console.log('CuPass',this.state.current_password);
-    console.log('Pass', this.state.password);
-    console.log('Re-Pass', this.state.confirm_password);
+    this.setState ({ 
+      modalVisible: true,
+      transparent: true,
+      animated: true
+    });
     let navigator = this.props.navigator;
     let userProfiles = this.state.userProfiles;
     let uToken = this.state.userToken;
