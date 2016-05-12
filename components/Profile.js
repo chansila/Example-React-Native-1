@@ -36,7 +36,9 @@ export default class Profile extends React.Component{
       current_password: '',
       animated: true,
       modalVisible: false,
-      transparent: false
+      transparent: false,
+      password: '',
+      confirm_password: ''
 
     };
   }
@@ -120,7 +122,7 @@ export default class Profile extends React.Component{
             onSubmitEditing={(event) => { this.refs.password.focus(); }}
             onChangeText={(address) => this.setState({address})}
             value={this.state.address}
-            defaultValue={this.state.userProfiles.address} />
+            defaultValue={this.state.userProfiles.address+''} />
 
             <Text style={styles.text_title}>Password :</Text>
             <Text style={{color: 'grey', paddingTop: 5}}>(leave blank if you don't want to change it)</Text>
@@ -168,7 +170,9 @@ export default class Profile extends React.Component{
     console.log('FName',this.state.firstName);
     console.log('LName',this.state.lastName);
     console.log('Add',this.state.address);
-    console.log('Pass',this.state.current_password);
+    console.log('CuPass',this.state.current_password);
+    console.log('Pass', this.state.password);
+    console.log('Re-Pass', this.state.confirm_password);
     let navigator = this.props.navigator;
     let userProfiles = this.state.userProfiles;
     let uToken = this.state.userToken;
@@ -189,6 +193,10 @@ export default class Profile extends React.Component{
     formdata.append("first_name", this.state.firstName);
     formdata.append("last_name", this.state.lastName);
     formdata.append("address", this.state.address);
+    if(this.state.password != '') {
+      formdata.append("password", this.state.password);
+      formdata.append("password_confirmation", this.state.confirm_password);
+    }
     formdata.append("current_password", this.state.current_password);
     xhr.send(formdata);
     xhr.onreadystatechange = function () {

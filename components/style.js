@@ -98,8 +98,10 @@ module.exports = StyleSheet.create({
     backgroundColor: '#6495ed'
   },
   innerContainer: {
-    borderRadius: 10,
+    borderRadius: 5,
+    margin: 10,
     alignItems: 'center',
+    backgroundColor: '#fff'
   },
   map: {
     position: 'absolute',

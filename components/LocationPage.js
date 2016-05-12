@@ -57,7 +57,8 @@ export default class LocationPage extends React.Component {
       transparent: false,
       mapAnimated: true,
       mapModalVisible: false,
-      mapTransparent: false
+      mapTransparent: false,
+      name: '', stated: '', city: '', district: '', commune: '', home: '', street: '', description: ''
     };
     ToastAndroid.show('You have Login success!', ToastAndroid.LONG);
   }
@@ -102,8 +103,6 @@ export default class LocationPage extends React.Component {
     };
 
     ImagePickerManager.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
-
       if (response.didCancel) {
         console.log('User cancelled photo picker');
       }
@@ -124,7 +123,6 @@ export default class LocationPage extends React.Component {
         this.setState({
           imageSource: this.state.imageSource.concat([source])
         });
-        console.log('Clicked Add Photo',this.state.imageSource);
       }
     });
   }
@@ -179,8 +177,6 @@ export default class LocationPage extends React.Component {
   }
 
   render() {
-    console.log('Lati :',this.state.latitude);
-    console.log('Long :',this.state.longitude);
     var modalBackgroundStyle = {
       backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
     };
@@ -438,6 +434,11 @@ export default class LocationPage extends React.Component {
   }
 
   gotoResultPage(){
+    this.setState ({ 
+      modalVisible: true,
+      transparent: true,
+      animated: true
+    });
     let navigator = this.props.navigator;
     let token = this.state.userToken['access-token'];
     let uid = this.state.userToken['uid'];
@@ -467,16 +468,16 @@ export default class LocationPage extends React.Component {
     this.state.imageSource.map(function(imageselected,key){
       formdata.append("location[location_photos_attributes["+key+"][photo]]", {uri: imageselected.uri, name: _generateUUID()+'.jpg', type: 'multipart/form-data'});
     });
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState===2 || xhr.readyState===4) {
-        this.setState ({ 
-          modalVisible: true,
-          transparent: true,
-          animated: true
-        });
-        console.log('On ready :',this.state.modalVisible);
-      }
-    }.bind(this);
+    // xhr.onreadystatechange = function () {
+    //   if (xhr.readyState===2 || xhr.readyState===4) {
+    //     this.setState ({ 
+    //       modalVisible: true,
+    //       transparent: true,
+    //       animated: true
+    //     });
+    //     console.log('On ready :',this.state.modalVisible);
+    //   }
+    // }.bind(this);
     xhr.send(formdata);
     xhr.onload = function () {
       this.setState ({ 
@@ -507,7 +508,6 @@ export default class LocationPage extends React.Component {
         this.refs._scrollView.scrollTo({x: 5, y: 5, animated: true});
       }
     }.bind(this);
-    console.log(xhr);
   }
 
 }

@@ -42,11 +42,6 @@ class Login extends React.Component{
         this.setState({
           userDataResponse: JSON.parse(value)
         });
-        console.log('uid', this.state.userDataResponse['uid']);
-        console.log('access-token', this.state.userDataResponse['access-token']);
-        console.log('client', this.state.userDataResponse['client']);
-        console.log('expiry', this.state.userDataResponse['expiry']);
-        console.log('token-type', this.state.userDataResponse['token-type']);
         this.verifyToken();
 
       } else {
@@ -61,7 +56,11 @@ class Login extends React.Component{
     let navigator = this.props.navigator;
     let userDataResponse = this.state.userDataResponse;
     let xhr = new XMLHttpRequest();
-    console.log('access-token 2', this.state.userDataResponse['access-token']);
+    this.setState ({ 
+      modalVisible: true,
+      transparent: true,
+      animated: true
+    });
     xhr.open('GET', 'http://locationcode.rotati.com/api/v1/auth/validate_token');
     xhr.setRequestHeader('content-type', 'multipart/form-data');
     xhr.setRequestHeader('access-token', this.state.userDataResponse['access-token']);
@@ -70,22 +69,21 @@ class Login extends React.Component{
     xhr.setRequestHeader('token-type', this.state.userDataResponse['token-type']);
     xhr.setRequestHeader('uid', this.state.userDataResponse['uid']);
     xhr.send(null);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState===2 || xhr.readyState===4) {
-        this.setState ({ 
-          modalVisible: true,
-          transparent: true,
-          animated: true
-        });
-        console.log('On ready :',this.state.modalVisible);
-      }
-    }.bind(this);
+    // xhr.onreadystatechange = function () {
+    //   if (xhr.readyState===2 || xhr.readyState===4) {
+    //     this.setState ({ 
+    //       modalVisible: true,
+    //       transparent: true,
+    //       animated: true
+    //     });
+    //   }
+    // }.bind(this);
     xhr.onload = function () {
       if (xhr.status === 200){
         this.setState ({ 
           modalVisible: false,
           transparent: false,
-          animated: false
+          animated: true
         });
         return navigator.push({
           name: 'LocationPage',
@@ -98,8 +96,10 @@ class Login extends React.Component{
         this.setState ({ 
           modalVisible: false,
           transparent: false,
-          animated: false
+          animated: true
         });
+        AsyncStorage.removeItem(ACCESS_TOKEN);
+        ToastAndroid.show('Session expired!', ToastAndroid.SHORT);
       }
     }.bind(this);
   }
@@ -216,7 +216,12 @@ class Login extends React.Component{
           }
         });
       }else{
-        return ToastAndroid.show('Logon Failure Unknown username or bad password', ToastAndroid.SHORT);
+        this.setState ({ 
+          modalVisible: false,
+          transparent: false,
+          animated: false
+        });
+        return ToastAndroid.show('Logon Failure Invalid username or password', ToastAndroid.SHORT);
       }
     }.bind(this);
   }
